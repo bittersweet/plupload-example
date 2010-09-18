@@ -1,17 +1,42 @@
-<%= form_for(@asset) do |f| %>
-  <% if @asset.errors.any? %>
-    <div id="error_explanation">
-      <h2><%= pluralize(@asset.errors.count, "error") %> prohibited this asset from being saved:</h2>
+<div>
+  <div id="filelist"></div>
+  <br />
+  <a id="pickfiles" href="#">[Select files]</a>
+  <a id="uploadfiles" href="#">[Upload files]</a>
+</div>
 
-      <ul>
-      <% @asset.errors.full_messages.each do |msg| %>
-        <li><%= msg %></li>
-      <% end %>
-      </ul>
-    </div>
-  <% end %>
+<script type="text/javascript">
+$(function(){
+  var uploader = new plupload.Uploader({
+    runtimes : "html5",
+    browse_button : 'pickfiles',
+    max_file_size : '10mb',
+    url : "/assets",
+    multipart: true,
+    multipart_params: {
+     "authenticity_token" : '<%= form_authenticity_token %>'
+    }
+  });
 
-  <div class="actions">
-    <%= f.submit %>
-  </div>
-<% end %>
+  uploader.bind('FilesAdded', function(up, files) {
+    $.each(files, function(i, file) {
+      $('#filelist').append(
+        '<div id="' + file.id + '">' +
+        'File: ' + file.name + ' (' + plupload.formatSize(file.size) + ') <b></b>' +
+        '</div>'
+        );
+      });
+    });
+
+  uploader.bind('UploadProgress', function(up, file) {
+    $('#' + file.id + " b").html(file.percent + "%");
+  });
+
+  $('#uploadfiles').click(function(e) {
+    uploader.start();
+    e.preventDefault();
+  });
+
+  uploader.init();
+});
+</script>
