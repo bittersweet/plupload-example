@@ -17,9 +17,9 @@ class AssetsController < ApplicationController
   end
 
   def create
-    @asset = Asset.new(params[:asset])
+    @asset = Asset.new(:asset => params[:file])
     if @asset.save
-      redirect_to(@asset, :notice => 'Asset was successfully created.')
+      head 200
     else
       render :action => "new"
     end
