@@ -1,5 +1,6 @@
 <p id="notice"><%= notice %></p>
 
+<%= image_tag @asset.asset.url(:thumb) %>
 
 <%= link_to 'Edit', edit_asset_path(@asset) %> |
 <%= link_to 'Back', assets_path %>
